@@ -1,0 +1,44 @@
+
+{% extends "base.html" %}
+
+{% block title %}Contacto | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="seccion-contacto">
+    <div class="contacto-encabezado">
+        <span>ESTAMOS PARA ATENDERTE</span>
+        <h1>Contáctanos</h1>
+        <p>
+            En Panadería Susan estamos para atenderte.
+            Escríbenos si tienes dudas o deseas realizar un pedido especial.
+        </p>
+    </div>
+
+    <div class="contacto-tarjetas">
+
+        <div class="contacto-card">
+            <span>📞</span>
+            <h3>Teléfono</h3>
+            <p>Comunícate con nosotros.</p>
+            <a href="tel:NUMERO_TELEFONICO">Llámanos</a>
+        </div>
+
+        <div class="contacto-card">
+            <span>✉️</span>
+            <h3>Correo electrónico</h3>
+            <p>Envíanos tus preguntas.</p>
+            <a href="mailto:CORREO_ELECTRONICO">Escríbenos</a>
+        </div>
+
+        <div class="contacto-card">
+            <span>📍</span>
+            <h3>Ubicación</h3>
+            <p>Visítanos en nuestra panadería.</p>
+            <p>Pinal de Amoles, Queretaro</p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

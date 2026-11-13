@@ -1,0 +1,57 @@
+
+<!-- ACTUALIZAR ESTADO DEL PEDIDO -->
+
+<div class="detalle-pedido-card actualizar-estado-card">
+
+    <div class="actualizar-estado-encabezado">
+        <div>
+            <span class="actualizar-estado-icono">📦</span>
+            <h3>Actualizar estado del pedido</h3>
+        </div>
+
+        <p>
+            Mantén informado al cliente sobre el avance de su pedido.
+        </p>
+    </div>
+
+    <form
+        action="{{ url_for('admin_actualizar_estado_pedido', pedido_id=pedido.id) }}"
+        method="POST"
+        class="form-actualizar-estado"
+    >
+
+        <div class="campo-estado">
+            <label for="estado">Estado del pedido</label>
+
+            <select name="estado" id="estado" required>
+
+                <option value="Pendiente"
+                    {% if pedido.estado == "Pendiente" %}selected{% endif %}>
+                    Pendiente
+                </option>
+
+                <option value="En preparación"
+                    {% if pedido.estado == "En preparación" %}selected{% endif %}>
+                    En preparación
+                </option>
+
+                <option value="Listo para entregar"
+                    {% if pedido.estado == "Listo para entregar" %}selected{% endif %}>
+                    Listo para entregar
+                </option>
+
+                <option value="Entregado"
+                    {% if pedido.estado == "Entregado" %}selected{% endif %}>
+                    Entregado
+                </option>
+
+            </select>
+        </div>
+
+        <button type="submit" class="boton-actualizar-estado">
+            <span>✓</span> Actualizar estado
+        </button>
+
+    </form>
+
+</div>

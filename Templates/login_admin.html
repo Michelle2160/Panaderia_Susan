@@ -1,0 +1,83 @@
+
+{% extends "base.html" %}
+
+{% block title %}Acceso administrativo | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="admin-autenticacion">
+
+    <div class="admin-login-imagen">
+
+        <span class="admin-icono"></span>
+
+        <h1>Panadería Susan</h1>
+
+        <p>Administración del negocio</p>
+
+        <div class="admin-decoracion">
+            
+        </div>
+
+    </div>
+
+    <div class="admin-formulario">
+
+        <span class="admin-etiqueta">PANEL ADMINISTRATIVO</span>
+
+        <h2>Bienvenido</h2>
+
+        <p class="admin-descripcion">
+            Ingresa tus credenciales para administrar
+            Panadería Susan.
+        </p>
+
+        {% with mensajes = get_flashed_messages() %}
+            {% if mensajes %}
+                {% for mensaje in mensajes %}
+                    <div class="mensaje">{{ mensaje }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login_admin') }}" method="POST">
+
+            <label for="correo">Correo electrónico</label>
+
+            <input
+                type="email"
+                id="correo"
+                name="correo"
+                placeholder="admin@panaderiasusan.com"
+                autocomplete="username"
+                required
+            >
+
+            <label for="contrasena">Contraseña</label>
+
+            <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                placeholder="Escribe tu contraseña"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit" class="boton boton-admin">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('inicio') }}" class="admin-volver">
+            ← Volver a la página principal
+        </a>
+        
+    </div>
+    
+
+</section>
+
+
+{% endblock %}

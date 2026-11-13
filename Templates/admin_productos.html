@@ -1,0 +1,117 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Gestión de productos | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="admin-seccion">
+
+    <div class="admin-seccion-encabezado">
+        <div>
+            <h1>Gestión de productos</h1>
+            <p>Administra los productos del catálogo de Panadería Susan.</p>
+        </div>
+
+        <a href="{{ url_for('admin_nuevo_producto') }}"
+           class="admin-boton">
+            + Agregar producto
+        </a>
+    </div>
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-admin">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Disponibilidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for producto in productos %}
+
+                <tr>
+                    <td>
+                        {% if producto.imagen %}
+                            <img
+                                src="{{ url_for('static', filename=producto.imagen) }}"
+                                alt="{{ producto.nombre }}"
+                                class="imagen-admin-producto">
+                        {% else %}
+                            <span>Sin imagen</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <strong>{{ producto.nombre }}</strong>
+                        <small>{{ producto.descripcion or '' }}</small>
+                    </td>
+
+                    <td>{{ producto.categoria }}</td>
+
+                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+
+                    <td>
+                        {% if producto.disponible %}
+                            <span class="estado-producto activo">
+                                Disponible
+                            </span>
+                        {% else %}
+                            <span class="estado-producto inactivo">
+                                No disponible
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="acciones-producto">
+
+                            <a href="{{ url_for('admin_editar_producto', producto_id=producto.id) }}"
+                               class="admin-boton-secundario">
+                                Editar
+                            </a>
+
+                            {% if producto.disponible %}
+
+                                <form method="POST"
+                                      action="{{ url_for('admin_desactivar_producto', producto_id=producto.id) }}"
+                                      onsubmit="return confirm('¿Estás segura de que deseas desactivar este producto?');">
+
+                                    <button type="submit"
+                                            class="admin-boton-desactivar">
+                                        Desactivar
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+                    </td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="6">
+                        Todavía no hay productos registrados.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+{% endblock %}

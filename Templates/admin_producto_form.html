@@ -1,0 +1,114 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {{ 'Editar producto' if producto else 'Nuevo producto' }} | Panadería Susan
+{% endblock %}
+
+{% block content %}
+
+<section class="admin-seccion">
+
+    <div class="admin-seccion-encabezado">
+        <div>
+            <h1>{{ 'Editar producto' if producto else 'Agregar producto' }}</h1>
+            <p>
+                {{ 'Modifica la información del producto.' if producto else 'Registra un nuevo producto en el catálogo.' }}
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin_productos') }}" class="admin-boton">
+            Volver a productos
+        </a>
+    </div>
+
+    <form method="POST"
+          action="{% if producto %}{{ url_for('admin_editar_producto', producto_id=producto.id) }}{% else %}{{ url_for('admin_nuevo_producto') }}{% endif %}"
+          enctype="multipart/form-data"
+          class="formulario-producto">
+
+        <div class="campo-formulario">
+            <label for="nombre">Nombre del producto *</label>
+            <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                maxlength="100"
+                required
+                value="{{ producto.nombre if producto else '' }}"
+                placeholder="Ej. Concha de vainilla">
+        </div>
+
+        <div class="campo-formulario">
+            <label for="descripcion">Descripción</label>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                rows="4"
+                placeholder="Describe las características del producto">{{ producto.descripcion if producto else '' }}</textarea>
+        </div>
+
+        <div class="campo-formulario">
+            <label for="precio">Precio *</label>
+            <input
+                type="number"
+                id="precio"
+                name="precio"
+                min="0.01"
+                step="0.01"
+                required
+                value="{{ producto.precio if producto else '' }}"
+                placeholder="Ej. 25.00">
+        </div>
+
+        <div class="campo-formulario">
+            <label for="categoria">Categoría *</label>
+            <input
+                type="text"
+                id="categoria"
+                name="categoria"
+                maxlength="30"
+                required
+                value="{{ producto.categoria if producto else 'Salada' }}"
+                placeholder="Ej. Dulce o Salada">
+        </div>
+
+        <div class="campo-formulario">
+            <label for="imagen">Imagen del producto</label>
+
+            {% if producto and producto.imagen %}
+                <p>Imagen actual:</p>
+
+                <img
+                    src="{{ url_for('static', filename=producto.imagen) }}"
+                    alt="{{ producto.nombre }}"
+                    class="imagen-admin-producto">
+
+                <small>Si no seleccionas otra imagen, se conservará la actual.</small>
+            {% endif %}
+
+            <input
+                type="file"
+                id="imagen"
+                name="imagen"
+                accept=".jpg,.jpeg,.png,.webp">
+
+            <small>Formatos permitidos: JPG, JPEG, PNG y WEBP. Máximo 5 MB.</small>
+        </div>
+
+        <div class="acciones-formulario">
+            <button type="submit" class="admin-boton">
+                {{ 'Guardar cambios' if producto else 'Guardar producto' }}
+            </button>
+
+            <a href="{{ url_for('admin_productos') }}"
+               class="admin-boton-secundario">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

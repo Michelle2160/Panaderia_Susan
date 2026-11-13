@@ -1,0 +1,239 @@
+
+{% extends "base.html" %}
+
+{% block title %}Catálogo | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="catalogo">
+
+    <!-- PORTADA DEL CATÁLOGO -->
+    <div class="catalogo-portada">
+
+        <div class="catalogo-portada-contenido">
+            <span class="catalogo-decoracion"></span>
+            <p class="catalogo-superior">NUESTRO</p>
+
+            <h1>Catálogo</h1>
+
+            <p class="catalogo-subtitulo">
+                Tradición y sabor en cada bocado
+            </p>
+
+            <span class="catalogo-linea"></span>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="catalogo-buscador">
+            <span class="icono-busqueda">⌕</span>
+
+            <input
+                type="search"
+                id="buscarProducto"
+                placeholder="¿Qué se te antoja hoy?"
+                aria-label="Buscar productos">
+
+            <button type="button" id="btnBuscar">
+                ⌕ Buscar
+            </button>
+        </div>
+
+        <!-- CATEGORÍAS -->
+        <nav class="catalogo-categorias"
+             aria-label="Categorías de productos">
+
+            <button type="button"
+                    class="categoria-btn activo"
+                    data-categoria="Todo">
+                Todo
+            </button>
+
+            <button type="button"
+                    class="categoria-btn"
+                    data-categoria="Especialidad de la casa">
+                ♡ Especialidad de la casa
+            </button>
+
+            <button type="button"
+                    class="categoria-btn"
+                    data-categoria="Pan dulce">
+                Pan dulce
+            </button>
+
+            <button type="button"
+                    class="categoria-btn"
+                    data-categoria="Pan blanco">
+                Pan blanco
+            </button>
+
+            <button type="button"
+                    class="categoria-btn"
+                    data-categoria="Bajo pedido">
+                 Bajo pedido
+            </button>
+
+        </nav>
+
+    </div>
+
+    <!-- CONTENIDO DE PRODUCTOS -->
+    <div class="catalogo-contenido">
+
+        <div class="productos-grid" id="productosGrid">
+
+            {% for producto in productos %}
+
+            <article class="producto-card"
+                     data-categoria="{{ producto.categoria }}"
+                     data-nombre="{{ producto.nombre|lower }}"
+                     data-descripcion="{{ (producto.descripcion or '')|lower }}">
+
+                <div class="producto-imagen">
+
+                    {% if producto.imagen %}
+                        <img
+                            src="{{ url_for('static', filename=producto.imagen) }}"
+                            alt="{{ producto.nombre }}">
+                    {% else %}
+                        <div class="imagen-pendiente">
+                            Imagen próximamente
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="producto-info">
+
+                    <h3>{{ producto.nombre }}</h3>
+
+                    <p class="producto-descripcion">
+                        {{ producto.descripcion or 'Producto de Panadería Susan.' }}
+                    </p>
+
+                    <p class="producto-precio">
+                        ${{ "%.2f"|format(producto.precio) }}
+                    </p>
+
+                    <form
+                        action="{{ url_for('agregar_carrito', producto_id=producto.id) }}"
+                        method="POST">
+
+                        <button type="submit" class="btn-carrito">
+                            Agregar al carrito
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- MENSAJE CUANDO NO HAY PRODUCTOS -->
+        <div id="sinResultados" class="sin-resultados" hidden>
+
+            <span class="sin-resultados-icono"></span>
+
+            <h2>No se encontraron productos</h2>
+
+            <p>
+                Prueba con otra categoría o realiza una nueva búsqueda.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FUNCIONAMIENTO DEL BUSCADOR Y FILTROS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const buscador = document.getElementById("buscarProducto");
+    const btnBuscar = document.getElementById("btnBuscar");
+    const botones = document.querySelectorAll(".categoria-btn");
+    const productos = document.querySelectorAll(".producto-card");
+    const mensaje = document.getElementById("sinResultados");
+
+    let categoriaSeleccionada = "Todo";
+
+    function normalizar(texto) {
+        return (texto || "")
+            .toLocaleLowerCase("es")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function filtrarProductos() {
+
+        const busqueda = normalizar(buscador.value);
+        let visibles = 0;
+
+        productos.forEach(function (producto) {
+
+            const categoria = normalizar(producto.dataset.categoria);
+            const nombre = normalizar(producto.dataset.nombre);
+            const descripcion = normalizar(producto.dataset.descripcion);
+
+            const categoriaEspecial =
+                categoriaSeleccionada === "Especialidad de la casa" &&
+                ["especialidad salada", "especialidad dulce"].includes(categoria);
+
+            const coincideCategoria =
+                categoriaSeleccionada === "Todo" ||
+                categoriaEspecial ||
+                categoria === normalizar(categoriaSeleccionada);
+
+            const coincideBusqueda =
+                nombre.includes(busqueda) ||
+                descripcion.includes(busqueda);
+
+            const mostrar = coincideCategoria && coincideBusqueda;
+
+            producto.hidden = !mostrar;
+
+            if (mostrar) {
+                visibles++;
+            }
+        });
+
+        mensaje.hidden = visibles > 0;
+    }
+
+    buscador.addEventListener("input", filtrarProductos);
+
+    btnBuscar.addEventListener("click", filtrarProductos);
+
+    buscador.addEventListener("keydown", function (evento) {
+        if (evento.key === "Enter") {
+            filtrarProductos();
+        }
+    });
+
+    botones.forEach(function (boton) {
+
+        boton.addEventListener("click", function () {
+
+            categoriaSeleccionada = boton.dataset.categoria;
+
+            botones.forEach(function (elemento) {
+                elemento.classList.remove("activo");
+            });
+
+            boton.classList.add("activo");
+
+            filtrarProductos();
+        });
+    });
+
+    filtrarProductos();
+
+});
+</script>
+
+{% endblock %}

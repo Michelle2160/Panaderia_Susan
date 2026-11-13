@@ -1,0 +1,64 @@
+
+{% extends "base.html" %}
+
+{% block title %}Seleccionar acceso | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="seleccion-acceso">
+
+    <div class="seleccion-encabezado">
+        <span>🌾</span>
+        <h1>Bienvenido a Panadería Susan</h1>
+        <p>Selecciona el tipo de acceso para continuar.</p>
+    </div>
+
+    <div class="accesos-contenedor">
+
+        <!-- ACCESO CLIENTE -->
+        <div class="acceso-card acceso-cliente">
+
+            <div class="acceso-icono">🛒</div>
+
+            <h2>Acceso de cliente</h2>
+
+            <p>
+                Consulta nuestro catálogo, agrega tus productos
+                favoritos al carrito y realiza tus pedidos.
+            </p>
+
+            <a href="{{ url_for('login') }}" class="boton-acceso">
+                Ingresar como cliente
+            </a>
+
+            <p class="acceso-registro">
+                ¿No tienes una cuenta?
+                <a href="{{ url_for('registro') }}">Regístrate aquí</a>
+            </p>
+
+        </div>
+
+        <!-- ACCESO ADMINISTRADOR -->
+        <div class="acceso-card acceso-admin">
+
+            <div class="acceso-icono">⚙️</div>
+
+            <h2>Acceso administrativo</h2>
+
+            <p>
+                Ingresa al sistema para administrar los productos
+                y gestionar los pedidos de la panadería.
+            </p>
+
+            <a href="{{ url_for('login_admin') }}"
+               class="boton-acceso boton-admin-acceso">
+                Ingresar como administrador
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

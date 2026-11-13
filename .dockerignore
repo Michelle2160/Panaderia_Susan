@@ -1,0 +1,35 @@
+
+# Variables de entorno y credenciales
+.env
+.env.*
+
+!.env.example
+
+# Entornos virtuales
+.venv/
+.venv_anterior/
+venv/
+env/
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Git
+.git/
+.gitignore
+
+# Editores
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+*.tmp
+.pytest_cache/
+.mypy_cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

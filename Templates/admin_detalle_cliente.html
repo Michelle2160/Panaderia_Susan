@@ -1,0 +1,209 @@
+
+{% extends "base.html" %}
+
+{% block title %}Detalle del cliente | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="admin-clientes">
+
+    <div class="admin-encabezado">
+        <div>
+            <span class="admin-ruta">
+                ADMINISTRACIÓN / CLIENTES / DETALLE
+            </span>
+
+            <h1>Información del cliente</h1>
+
+            <p>Consulta sus datos y su historial de pedidos.</p>
+        </div>
+
+        <a href="{{ url_for('admin_clientes') }}"
+           class="boton-regresar">
+            ← Volver a clientes
+        </a>
+    </div>
+
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+            {% for mensaje in mensajes %}
+                <div class="mensaje">
+                    {{ mensaje }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="detalle-cliente-card">
+
+        <div class="detalle-cliente-icono">
+            👤
+        </div>
+
+        <div class="detalle-cliente-info">
+
+            <span class="admin-ruta">DATOS GENERALES</span>
+
+            <h2>{{ cliente.nombre }}</h2>
+
+            <p>
+                <strong>ID de cliente:</strong>
+                #{{ cliente.id }}
+            </p>
+
+            <p>
+                <strong>Correo electrónico:</strong>
+                {{ cliente.correo }}
+            </p>
+
+            <p>
+                <strong>Fecha de registro:</strong>
+
+                {% if cliente.fecha_registro %}
+                    {{ cliente.fecha_registro.strftime('%d/%m/%Y') }}
+                {% else %}
+                    No disponible
+                {% endif %}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="clientes-estadisticas">
+
+        <div class="cliente-resumen-card">
+            <span class="resumen-icono">📦</span>
+            <div>
+                <h3>{{ total_pedidos }}</h3>
+                <p>Pedidos realizados</p>
+            </div>
+        </div>
+
+        <div class="cliente-resumen-card">
+            <span class="resumen-icono">💰</span>
+            <div>
+                <h3>${{ "%.2f"|format(total_compras) }}</h3>
+                <p>Total de pedidos registrados</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="clientes-contenedor">
+
+        <div class="clientes-toolbar">
+            <div>
+                <h2>Historial de pedidos</h2>
+                <p>Pedidos asociados a este cliente.</p>
+            </div>
+        </div>
+
+        {% if pedidos %}
+
+        <div class="tabla-clientes-contenedor">
+
+            <table class="tabla-clientes">
+
+                <thead>
+                    <tr>
+                        <th>Folio</th>
+                        <th>Fecha del pedido</th>
+                        <th>Fecha de entrega</th>
+                        <th>Total</th>
+                        <th>Pago</th>
+                        <th>Estado del pedido</th>
+                        <th>Estado del pago</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for pedido in pedidos %}
+
+                    <tr>
+                        <td>#{{ pedido.id }}</td>
+
+                        <td>
+                            {% if pedido.fecha_pedido %}
+                                {{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if pedido.fecha_entrega %}
+                                {{ pedido.fecha_entrega.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            ${{ "%.2f"|format(pedido.total) }}
+                        </td>
+
+                        <td>{{ pedido.metodo_pago }}</td>
+
+                        <td>{{ pedido.estado }}</td>
+
+                        <td>{{ pedido.estado_pago }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="clientes-vacio">
+            <span>📦</span>
+            <h3>Sin pedidos registrados</h3>
+            <p>Este cliente todavía no ha realizado pedidos.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+<    <div class="eliminar-cliente-contenedor">
+
+        <div>
+            <h3>Eliminar cuenta de cliente</h3>
+
+            <p>
+                Solo se pueden eliminar clientes que no tengan
+                pedidos registrados.
+            </p>
+        </div>
+
+        {% if total_pedidos == 0 %}
+
+            <form
+                action="{{ url_for('admin_eliminar_cliente', cliente_id=cliente.id) }}"
+                method="POST"
+                onsubmit="return confirm('¿Estás segura de que deseas eliminar esta cuenta?');"
+            >
+                <button type="submit" class="boton-eliminar-cliente">
+                    Eliminar cliente
+                </button>
+            </form>
+
+        {% else %}
+
+            <span class="cliente-con-pedidos">
+                No se puede eliminar: tiene pedidos registrados.
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

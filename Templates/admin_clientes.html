@@ -1,0 +1,165 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestión de clientes | Panadería Susan{% endblock %}
+
+{% block content %}
+
+<section class="admin-clientes">
+
+    <div class="admin-encabezado">
+        <div>
+            <span class="admin-ruta">ADMINISTRACIÓN / CLIENTES</span>
+            <h1>Gestión de clientes</h1>
+            <p>
+                Consulta y administra los clientes registrados
+                en Panadería Susan.
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin_dashboard') }}"
+           class="boton-regresar">
+            ← Volver al panel
+        </a>
+    </div>
+
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+            {% for mensaje in mensajes %}
+                <div class="mensaje">
+                    {{ mensaje }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="clientes-resumen">
+        <div class="cliente-resumen-card">
+            <span class="resumen-icono">👥</span>
+            <div>
+                <h3>{{ total_clientes }}</h3>
+                <p>
+                    {% if busqueda %}
+                        Clientes encontrados
+                    {% else %}
+                        Clientes registrados
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="clientes-contenedor">
+
+        <div class="clientes-toolbar">
+            <div>
+                <h2>Listado de clientes</h2>
+                <p>Consulta la información de tus clientes.</p>
+            </div>
+
+            <form method="GET"
+                  action="{{ url_for('admin_clientes') }}"
+                  class="busqueda-clientes">
+
+                <input
+                    type="search"
+                    name="busqueda"
+                    value="{{ busqueda }}"
+                    placeholder="Buscar por nombre o correo..."
+                >
+
+                <button type="submit">
+                    Buscar
+                </button>
+
+                {% if busqueda %}
+                    <a href="{{ url_for('admin_clientes') }}"
+                       class="limpiar-busqueda">
+                        Limpiar
+                    </a>
+                {% endif %}
+
+            </form>
+        </div>
+
+        {% if clientes %}
+
+        <div class="tabla-clientes-contenedor">
+
+            <table class="tabla-clientes">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre del cliente</th>
+                        <th>Correo electrónico</th>
+                        <th>Fecha de registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for cliente in clientes %}
+
+                    <tr>
+                        <td>#{{ cliente.id }}</td>
+
+                        <td class="cliente-nombre">
+                            {{ cliente.nombre }}
+                        </td>
+
+                        <td>{{ cliente.correo }}</td>
+
+                        <td>
+                            {% if cliente.fecha_registro %}
+                                {{ cliente.fecha_registro.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a
+                                href="{{ url_for(
+                                    'admin_detalle_cliente',
+                                    cliente_id=cliente.id
+                                ) }}"
+                                class="boton-ver-cliente"
+                            >
+                                Ver detalles
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="clientes-vacio">
+            <span>👥</span>
+
+            <h3>No se encontraron clientes</h3>
+
+            <p>
+                {% if busqueda %}
+                    No hay clientes que coincidan con tu búsqueda.
+                {% else %}
+                    Todavía no hay clientes registrados.
+                {% endif %}
+            </p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

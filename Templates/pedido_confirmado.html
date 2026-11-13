@@ -1,0 +1,76 @@
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<section class="contenedor-pedido">
+
+    <h1>¡Pedido registrado!</h1>
+
+    <p>Gracias por comprar en Panadería Susan.</p>
+
+    <h2>Resumen de tu pedido</h2>
+
+    <p>
+        <strong>Folio:</strong> {{ pedido_id }}
+    </p>
+
+    <p>
+        <strong>Total:</strong>
+        ${{ "%.2f"|format(total) }}
+    </p>
+
+    <p>
+        <strong>Método de pago:</strong> {{ metodo_pago }}
+    </p>
+
+    <p>
+        <strong>Estado del pedido:</strong> Pendiente
+    </p>
+
+    <p>
+        <strong>Estado del pago:</strong> {{ estado_pago }}
+    </p>
+
+    {% if metodo_pago == "Tarjeta" %}
+        <p>
+            Tu pedido está registrado. El pago con tarjeta
+            todavía debe verificarse mediante la simulación.
+        </p>
+    {% else %}
+        <p>
+            Recuerda realizar el pago en efectivo al recibir
+            o recoger tu pedido.
+        </p>
+    {% endif %}
+
+    {% if correo_enviado %}
+        <div class="mensaje-exito">
+            <strong>¡Comprobante enviado!</strong>
+            <p>
+                Tu comprobante PDF fue enviado automáticamente
+                al correo electrónico asociado a tu cuenta:
+            </p>
+            <strong>{{ correo_cliente }}</strong>
+        </div>
+    {% else %}
+        <div class="mensaje-aviso">
+            <strong>Tu pedido se registró correctamente.</strong>
+            <p>
+                Sin embargo, no fue posible enviar el comprobante
+                PDF a tu correo electrónico. Puedes solicitarlo
+                directamente a la panadería.
+            </p>
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('catalogo') }}" class="btn-seguir">
+        Volver al catálogo
+    </a>
+
+</section>
+
+{% endblock %}
+
+
